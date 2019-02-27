@@ -26,20 +26,34 @@ ui <- fluidPage(  useShinyjs()
                     tabsetPanel(
                       tabPanel("Settings",
                                fluidRow(
-                                 column(2, textInput(inputId = "currentWD", label = "Current work directory", width = '200%')
-                                        ,textInput(inputId = "newWD", label = "New work directory", width = '200%')
-                                        , actionButton("defaultWD", "Run default work directory!", width = 200)
+                                 column(2, 
+                                         wellPanel(
+                                                   textInput(inputId = "currentWD", label = "Current work directory", width = '200%')
+                                                  ,textInput(inputId = "newWD", label = "New work directory", width = '200%')
+                                                  ,actionButton("defaultWD", "Save default work directory", width = '200px')
+                                                  #,textInput(inputId = "saveSettings", label = "File to save settings", width = '200%')
+                                         )
                                  )
                                  
                                  
-                               ),
-                               tabPanel("Summary", verbatimTextOutput("summary")),
+                               )
+                              ),
+                      
+                      tabPanel("Preprocessing", 
+                               fluidRow(column(3, 
+                                                textInput(inputId = "loadDR", label = "The directory to load data file", width = '800px') 
+                                               ,textInput(inputId = "loadFileName", label = "The file to load data file", width = '800px')
+                                               ,actionButton("loadDF", "Load data", width = '200px')
+                                              )
+                                       )        
+                              ),
+                      
                                tabPanel("Table", tableOutput("table"))
                       )
                     )   
                     
                     
-                  )
+                  
 )                  
 # Define server logic required to draw a histogram
 server <- function(input, output) {
