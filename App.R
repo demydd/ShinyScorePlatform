@@ -1,6 +1,17 @@
 if(!require(shinyjs)){
   library(shinyjs)  
 }
+if(!require(rhandsontable)){
+  library(rhandsontable)  
+}
+if(!require(data.table)){
+  library(data.table)  
+}
+if(!require(scoredevr)){
+  library(scoredevr)  
+}
+
+
 
 #install.packages('devtools')
 #devtools::install_github('rstudio/shinyapps')
@@ -44,7 +55,11 @@ ui <- fluidPage(  useShinyjs()
                                                 textInput(inputId = "loadDR", label = "The directory to load data file", width = '800px') 
                                                ,textInput(inputId = "loadFileName", label = "The file to load data file", width = '800px')
                                                ,actionButton("loadDF", "Load data", width = '200px')
-                                              )
+                                              ),
+                                        column(1,
+                                                rHandsontableOutput("loaded_tabel")
+                                               )
+                                        
                                        )        
                               ),
                       
@@ -58,6 +73,18 @@ ui <- fluidPage(  useShinyjs()
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
+  observeEvent(input$loadDF,{
+  
+    
+    output$loaded_tabel <-renderRHandsontable({
+      
+      rhandsontable(df, selectCallback = TRUE, height = 600) %>%
+        hot_table(highlightCol = TRUE, highlightRow = TRUE) %>%
+        hot_rows(rowHeights = list(18))
+      
+    })
+    
+  })
   #   output$distPlot <- renderPlot({
   # generate bins based on input$bins from ui.R
   #      x    <- faithful[, 2] 
