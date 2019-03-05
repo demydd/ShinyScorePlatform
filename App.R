@@ -10,15 +10,18 @@ if(!require(data.table)){
 if(!require(scoredevr)){
   library(scoredevr)  
 }
+if(!require(shiny)){
+  library(shiny)  
+}
 
-
-
+pathName = "D:\\Demyd\\Personal\\R\\kaggle\\"
+filename = "application_train.csv"
 #install.packages('devtools')
 #devtools::install_github('rstudio/shinyapps')
 
 #rm(list =ls())
 
-library(shiny)
+
 
 func <- function() {
   "hi there!"
@@ -56,8 +59,8 @@ ui <- fluidPage(  useShinyjs()
                                                ,textInput(inputId = "loadFileName", label = "The file to load data file", width = '800px')
                                                ,actionButton("loadDF", "Load data", width = '200px')
                                               ),
-                                        column(1,
-                                                rHandsontableOutput("loaded_tabel")
+                                        column(4,
+                                                rHandsontableOutput("loaded_table")
                                                )
                                         
                                        )        
@@ -71,14 +74,22 @@ ui <- fluidPage(  useShinyjs()
                   
 )                  
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, session) {
+  
+
   
   observeEvent(input$loadDF,{
-  
     
-    output$loaded_tabel <-renderRHandsontable({
+    #if(is.null(input$loadDR)) input$loadDR <- getwd()
+    print(input$loadDR)
+    print(paste(input$loadDR,"\\",input$loadFileName, sep="",collapse=""))
+    
+    df <- fread(paste(input$loadDR,"\\\\", input$loadFileName, sep="",collapse=""),stringsAsFactor=FALSE)
+    print(dim(df))
+    
+    output$loaded_table <-renderRHandsontable({
       
-      rhandsontable(df, selectCallback = TRUE, height = 600) %>%
+      rhandsontable(df[1:10, ], selectCallback = TRUE, height = 600) %>%
         hot_table(highlightCol = TRUE, highlightRow = TRUE) %>%
         hot_rows(rowHeights = list(18))
       
