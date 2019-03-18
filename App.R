@@ -15,17 +15,12 @@ if(!require(shiny)){
 }
 
 pathName = "D:\\Demyd\\Personal\\R\\kaggle\\"
-filename = "application_train.csv"
+fileName = "application_train.csv"
 #install.packages('devtools')
 #devtools::install_github('rstudio/shinyapps')
 
 #rm(list =ls())
 
-
-
-func <- function() {
-  "hi there!"
-}
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(  useShinyjs()
@@ -77,23 +72,29 @@ ui <- fluidPage(  useShinyjs()
 server <- function(input, output, session) {
   
 
-  
   observeEvent(input$loadDF,{
     
-    #if(is.null(input$loadDR)) input$loadDR <- getwd()
-    print(input$loadDR)
-    print(paste(input$loadDR,"\\",input$loadFileName, sep="",collapse=""))
-    
-    df <- fread(paste(input$loadDR,"\\\\", input$loadFileName, sep="",collapse=""),stringsAsFactor=FALSE)
-    print(dim(df))
-    
-    output$loaded_table <-renderRHandsontable({
-      
-      rhandsontable(df[1:10, ], selectCallback = TRUE, height = 600) %>%
-        hot_table(highlightCol = TRUE, highlightRow = TRUE) %>%
-        hot_rows(rowHeights = list(18))
-      
+
+    observe({
+      pathDR <- input$loadDR
+      filename <- input$loadFileName
+        
+      if (input$loadDR == "" | is.na(input$loadDR)){
+        updateTextInput(session, "loadDR", value = pathName)
+        pathDR <- pathName
+      }
+  
+      if(input$loadFileName == "" | is.na(input$loadFileName)){
+        updateTextInput(session, "loadFileName", value = fileName)
+        filename <- fileName
+      }
     })
+  
+
+  full_path <- paste(pathName, fileName, sep="",collapse="")
+
+  df <- fread(full_path, stringsAsFactor=FALSE)
+
     
   })
   #   output$distPlot <- renderPlot({
