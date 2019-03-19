@@ -91,20 +91,18 @@ server <- function(input, output, session) {
     })
   
 
-  full_path <- paste(pathName, fileName, sep="",collapse="")
-
-  df <- fread(full_path, stringsAsFactor=FALSE)
-
-    
-  })
-  #   output$distPlot <- renderPlot({
-  # generate bins based on input$bins from ui.R
-  #      x    <- faithful[, 2] 
-  #      bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    full_path <- paste(pathName, fileName, sep="",collapse="")
   
-  # draw the histogram with the specified number of bins
-  #      hist(x, breaks = bins, col = 'darkgray', border = 'white')
-  #   })
+    df <- fread(full_path, stringsAsFactor=FALSE)[1:10]
+
+    output$loaded_table <- renderRHandsontable({
+
+      if (!is.null(df))
+        rhandsontable(df)
+    })
+
+  })
+
 }
 
 # Run the application 
