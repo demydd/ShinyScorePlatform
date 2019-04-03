@@ -54,7 +54,8 @@ ui <- fluidPage(  useShinyjs()
                                                ,textInput(inputId = "loadFileName", label = "The file to load data file", width = '800px')
                                                ,actionButton("loadDF", "Load data", width = '200px')
                                               ),
-                                        column(4,
+                                        br(),
+                                        column(8,
                                                 rHandsontableOutput("loaded_table")
                                                )
                                         
@@ -94,11 +95,14 @@ server <- function(input, output, session) {
     full_path <- paste(pathName, fileName, sep="",collapse="")
   
     df <- fread(full_path, stringsAsFactor=FALSE)[1:10]
-
+    #browser()
+    #debugonce(calcDescStat)
+    descStat <- calcDescStat(df)
+    
     output$loaded_table <- renderRHandsontable({
 
-      if (!is.null(df))
-        rhandsontable(df)
+      if (!is.null(descStat))
+        rhandsontable(descStat)
     })
 
   })
